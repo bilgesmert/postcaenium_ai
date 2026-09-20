@@ -14,4 +14,8 @@ def create_app():
     app.register_blueprint(pages_bp)
     app.register_blueprint(api_bp)
 
+    @app.route("/health")
+    def health():
+        return {"status": "ok"}
+
     return app
