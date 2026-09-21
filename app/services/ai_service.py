@@ -8,7 +8,7 @@ class AIServiceError(Exception):
 
 class AIService:
     def __init__(self):
-        self.model = "llama-3.1-8b-instant"
+        self.model = "openai/gpt-oss-20b"
 
     def yanit_uret(self, mesaj, gecmis=None):
         gecmis = gecmis or []
@@ -37,7 +37,9 @@ class AIService:
                 },
                 json={
                     "model": self.model,
-                    "messages": messages
+                    "messages": messages,
+                    "reasoning_effort": "low",
+                    "max_completion_tokens": 250
                 },
                 timeout=30
             )
