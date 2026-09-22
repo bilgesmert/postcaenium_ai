@@ -23,10 +23,34 @@ def sohbet():
     mesaj = veri.get("mesaj")
     gecmis = veri.get("gecmis", [])
 
-    if not mesaj:
+    if not isinstance(gecmis, list):
+        return jsonify({
+            "basari": False,
+            "hata": "Geçmiş bilgisi liste formatında olmalıdır."
+        }), 400
+
+    for kayit in gecmis:
+        if (
+            not isinstance(kayit, dict)
+            or kayit.get("role") not in ["user", "assistant"]
+            or not isinstance(kayit.get("content"), str)
+            or not kayit.get("content").strip()
+        ):
+            return jsonify({
+                "basari": False,
+                "hata": "Geçmiş konuşma formatı geçersiz."
+            }), 400
+
+    if not isinstance(mesaj, str) or not mesaj.strip():
         return jsonify({
             "basari": False,
             "hata": "Mesaj zorunludur."
+        }), 400
+
+    if len(mesaj) > 2000:
+        return jsonify({
+            "basari": False,
+            "hata": "Mesaj en fazla 2000 karakter olabilir."
         }), 400
 
     try:
@@ -50,10 +74,40 @@ def lead_olustur():
     telefon = veri.get("telefon")
     mesaj = veri.get("mesaj")
 
-    if not isim or not telefon:
+    if not isinstance(isim, str) or not isim.strip():
         return jsonify({
             "basari": False,
-            "hata": "İsim ve telefon zorunludur."
+            "hata": "Geçerli bir isim girilmelidir."
+        }), 400
+
+    if len(isim.strip()) > 100:
+        return jsonify({
+            "basari": False,
+            "hata": "İsim en fazla 100 karakter olabilir."
+        }), 400
+
+    if not isinstance(telefon, str) or not telefon.strip():
+        return jsonify({
+            "basari": False,
+            "hata": "Geçerli bir telefon numarası girilmelidir."
+        }), 400
+
+    if len(telefon.strip()) > 30:
+        return jsonify({
+            "basari": False,
+            "hata": "Telefon numarası en fazla 30 karakter olabilir."
+        }), 400
+
+    if mesaj is not None and not isinstance(mesaj, str):
+        return jsonify({
+            "basari": False,
+            "hata": "Mesaj metin formatında olmalıdır."
+        }), 400
+
+    if isinstance(mesaj, str) and len(mesaj.strip()) > 2000:
+        return jsonify({
+            "basari": False,
+            "hata": "Mesaj en fazla 2000 karakter olabilir."
         }), 400
 
     lead_ekle(isim, telefon, mesaj)
