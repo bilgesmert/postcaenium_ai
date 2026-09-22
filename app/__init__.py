@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 
@@ -7,7 +8,10 @@ from app.routes import api_bp, pages_bp
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(config_by_name["development"])
+
+    env = os.environ.get("FLASK_ENV", "development")
+    app.config.from_object(config_by_name[env])
+    
     CORS(app, origins=app.config["CORS_ORIGINS"])
     init_db(app)
     
