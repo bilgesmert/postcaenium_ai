@@ -48,8 +48,8 @@ class AIService:
             data = response.json()
             return data["choices"][0]["message"]["content"]
 
-        except requests.RequestException as e:
+        except requests.RequestException:
             raise AIServiceError(
-                f"Yapay zeka servisine bağlanırken hata oluştu: {e}"
+                "Yapay zeka servisine şu anda ulaşılamıyor. Lütfen daha sonra tekrar deneyin."
             )
 ai_service = AIService()     
